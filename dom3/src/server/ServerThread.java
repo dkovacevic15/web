@@ -94,7 +94,7 @@ public class ServerThread implements Runnable {
 
 		searcharg = searcharg.replace(' ', '+');
 		for (String username : server.getUsernames()) {
-			if (username.equals(searcharg)) {
+			if (username.contains(searcharg)) {
 				found = true;
 				builder.append("<tr><td>");
 				builder.append(username);
