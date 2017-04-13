@@ -6,8 +6,6 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class ServerThread implements Runnable {
 
@@ -47,19 +45,6 @@ public class ServerThread implements Runnable {
 
 	}
 
-	private String list() {
-		List<String> usernames = server.getUsernames();
-		StringBuilder builder = new StringBuilder();
-
-		for (String username : usernames) {
-			builder.append(' ');
-			builder.append(username);
-		}
-		return builder.toString();
-	}
-
-
-
 	private String getResponse(String request) {
 		System.out.println(request);
 
@@ -78,10 +63,10 @@ public class ServerThread implements Runnable {
 		} else if (request.contains("searcharg")) {
 			String searcharg = request.substring(request.indexOf("searcharg=")+"searcharg=".length(), request.indexOf("HTTP/"));
 			System.out.println("Searching for: " + searcharg);
-			body = search(searcharg);
+			body = search(searcharg.trim());
 		}
-		
-		
+
+
 		response += "<html><head><title>Response</title></head>\n";
 		response += "<body>" + body + "\n";
 		response += "</body></html>";
@@ -102,19 +87,21 @@ public class ServerThread implements Runnable {
 	private String search(String searcharg) {
 		StringBuilder builder = new StringBuilder();
 		boolean found = false;
-		
+
 		builder.append("<h1>Search results:</h1>\n");
 		builder.append("<br><table>\n");
-		
-		
+
+
 		searcharg = searcharg.replace(' ', '+');
 		for (String username : server.getUsernames()) {
-			if (username.contains(searcharg)) {
+			if (username.equals(searcharg)) {
 				found = true;
-				
+				builder.append("<tr><td>");
+				builder.append(username);
+				builder.append("</td></tr>");
 			}
 		}
-		
+
 		if (!found) {
 			builder.append("<tr><td>");
 			builder.append("No results found");
